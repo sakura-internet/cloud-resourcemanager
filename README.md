@@ -15,7 +15,7 @@
 
 | 名前 | 説明 |
 | --- | :--- |
-| [サーバ作成及びシンプル監視する構成]() | このテンプレートはサーバを1台作成してシンプル監視を使用してpingにて死活監視を行います。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/server.html) をご覧ください。  |
+| [サーバ作成及びシンプル監視する構成](./thfile/server.tf) | このテンプレートはサーバを1台作成してシンプル監視を使用してpingにて死活監視を行います。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/server.html) をご覧ください。  |
 | [VPC ルータを設置し、配下にサーバを構築する構成]() | VPCルータを設置し、サーバに対してHTTPとHTTPSのみインターネットからの接続を許可します。そのほかの通信に関してはL2TP/IPSecにて接続することにより可能となります。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/vpc-router.html) をご覧ください。  |
 | [Webサーバを2台構築し、ロードバランサで冗長化する構成]() | ロードバランサ・アプライアンスと、Webサーバを2台構成してLBにて負荷分散する構成です。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/load-balancer.html) をご覧ください。  |
 
