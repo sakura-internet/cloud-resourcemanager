@@ -134,6 +134,7 @@ nmcli con down "System eth1"; nmcli con up "System eth1"
 # Dockerのインストール
 curl -fsSL https://get.docker.com/ | sh
 systemctl enable docker.service
+systemctl start docker.service
 
 # Docker上でMetabaseを起動
 cat > /root/run-metabase.sh <<EOL
