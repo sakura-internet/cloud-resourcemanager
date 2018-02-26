@@ -24,5 +24,7 @@
 | 名前 | 説明 |
 | --- | :--- |
 | [DBやNFSアプライアンスも利用した複合構成を構築](./tffile/multi.tf) | Webサーバを2台構成してLBにて負荷分散になっています。また、DBアプライアンスを利用してDBを構築します。ローカル側にはVPCルータを経由しL2TP-IPSecで接続する構成です。ローカルサーバはファイルサーバとして利用を想定してNFSアプライアンスを構築します。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/multi.html) をご覧ください。  |
+| [Metabaseを構築する構成(CentOS7バージョン)](./tffile/metabase-centos.tf) | このテンプレートはCentOS7上のDockerでMetabaseを実行する構成となっています。Metabaseのバックエンドとしてデータベースアプライアンス(PostgreSQL)を利用します。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/metabase.html) をご覧ください。  |
+| [Metabaseを構築する構成(RancherOSバージョン)](./tffile/metabase-rancheros.tf) | このテンプレートはRancherOS上のDockerでMetabaseを実行する構成となっています。Metabaseのバックエンドとしてデータベースアプライアンス(PostgreSQL)を利用します。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/metabase.html) をご覧ください。  |
 
 構文は [Terraform for さくらのクラウド ドキュメント](https://sacloud.github.io/terraform-provider-sakuracloud/) をご覧ください。
