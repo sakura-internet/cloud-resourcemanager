@@ -134,7 +134,6 @@ data sakuracloud_archive "centos" {
 resource "sakuracloud_disk" "disk01" {
   name              = "${local.disk_name}"
   source_archive_id = "${data.sakuracloud_archive.centos.id}"
-  password          = "${local.server_password}"
 }
 
 # サーバ
@@ -148,5 +147,7 @@ resource sakuracloud_server "server01" {
   ipaddress   = "${local.server_ip}"
   nw_mask_len = "${local.server_mask_len}"
   gateway     = "${local.vpc_router_eth1_ip}"
+
+  password    = "${local.server_password}"
 }
 
