@@ -20,9 +20,6 @@ resource "sakuracloud_disk" "disk01"{
     plan      = "ssd"           // プランの指定
     size      = 40              // 容量指定(GB)
     source_archive_id = "${data.sakuracloud_archive.centos.id}" // アーカイブの設定
-
-    hostname = "your-host-name" // ホスト名の設定
-    password = "your-password"  // rootパスワードの設定
 }
 # VM作成
 resource "sakuracloud_server" "server01" {
@@ -31,6 +28,9 @@ resource "sakuracloud_server" "server01" {
     nic = "shared"              // 共有セグメントに接続
     core = 2                    // CPUコアの指定
     memory = 2                  // メモリ容量の指定
+
+    hostname = "your-host-name" // ホスト名の設定
+    password = "your-password"  // rootパスワードの設定
 }
 
 # ----------------------------------------------------------
