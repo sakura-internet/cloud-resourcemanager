@@ -71,6 +71,9 @@ locals {
 
     # バックアップ時刻
     database_backup_time = "01:00"
+
+    # バックアップ取得曜日
+    database_backup_weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 }
 
 ### サーバ/ディスク
@@ -84,9 +87,6 @@ data sakuracloud_archive "centos" {
 resource "sakuracloud_disk" "disk" {
     name              = "${local.server_name}"
     source_archive_id = "${data.sakuracloud_archive.centos.id}"
-    hostname          = "${local.host_name}"
-    password          = "${local.server_password}"
-    note_ids          = ["${sakuracloud_note.provisioning.id}"]
 
     lifecycle {
         ignore_changes = ["source_archive_id"]
@@ -101,6 +101,10 @@ resource "sakuracloud_server" "server" {
     memory            = "${local.server_memory}"
     packet_filter_ids = ["${sakuracloud_packet_filter.filter.id}"]
     additional_nics   = ["${sakuracloud_switch.sw.id}"]
+
+    hostname          = "${local.host_name}"
+    password          = "${local.server_password}"
+    note_ids          = ["${sakuracloud_note.provisioning.id}"]
 }
 
 # スタートアップスクリプト(Dockerインストール、IP設定、metabaseコンテナ起動)
@@ -170,9 +174,10 @@ resource "sakuracloud_database" "db" {
     user_name     = "${local.database_user_name}"
     user_password = "${local.database_password}"
 
-    allow_networks = ["192.168.100.0/28"]
-    port           = 5432
-    backup_time    = "${local.database_backup_time}"
+    allow_networks  = ["192.168.100.0/28"]
+    port            = 5432
+    backup_time     = "${local.database_backup_time}"
+    backup_weekdays = "${local.database_backup_weekdays}"
 
     switch_id     = "${sakuracloud_switch.sw.id}"
     ipaddress1    = "192.168.100.2"
