@@ -135,11 +135,6 @@ resource "sakuracloud_disk" "disk01"{
     plan      = "ssd"           // プランの指定
     size      = 40              // 容量指定(GB)
     source_archive_id = "${data.sakuracloud_archive.centos.id}" // アーカイブの設定
-
-    hostname = "${var.server01_hostname}"
-    password = "${var.server_password}"
-
-    note_ids = ["${sakuracloud_note.lb_dsr.id}" , "${sakuracloud_note.install_httpd.id}"]
 }
 resource "sakuracloud_server" "server01" {
     name = "server01"
@@ -151,6 +146,10 @@ resource "sakuracloud_server" "server01" {
 
     core = 2
     memory = 2
+
+    hostname = "${var.server01_hostname}"
+    password = "${var.server_password}"
+    note_ids = ["${sakuracloud_note.lb_dsr.id}" , "${sakuracloud_note.install_httpd.id}"]
 }
 # ----------------------------------------------------------
 # サーバー2
@@ -160,10 +159,6 @@ resource "sakuracloud_disk" "disk02"{
     plan      = "ssd"           // プランの指定
     size      = 40              // 容量指定(GB)
     source_archive_id = "${data.sakuracloud_archive.centos.id}" // アーカイブの設定
-
-    hostname = "your-host-name"
-    password = "your-password"
-    note_ids = ["${sakuracloud_note.lb_dsr.id}" , "${sakuracloud_note.install_httpd.id}"]
 }
 resource "sakuracloud_server" "server02" {
     name = "server02"
@@ -175,4 +170,8 @@ resource "sakuracloud_server" "server02" {
 
     core = 2
     memory = 2
+
+    hostname = "${var.server02_hostname}"
+    password = "${var.server_password}"
+    note_ids = ["${sakuracloud_note.lb_dsr.id}" , "${sakuracloud_note.install_httpd.id}"]
 }
