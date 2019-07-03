@@ -338,7 +338,8 @@ resource sakuracloud_database "webdb" {
 resource sakuracloud_nfs "fs" {
   name          = "fs"
   switch_id     = "${sakuracloud_switch.sw01.id}"
-  plan          = "500"                           // プラン[100/500/1024(1T)/2048(2T)/4096(4T)]
+  plan          = "hdd"                    //プラン[hdd/ssd]
+  size          = "500"                    //サイズ[100/500/1024(1T)/2048(2T)/4096(4T)]
   ipaddress     = "192.168.100.102"
   nw_mask_len   = 24
   default_route = "192.168.100.250"
