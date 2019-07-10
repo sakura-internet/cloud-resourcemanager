@@ -28,3 +28,6 @@
 | [Metabaseを構築する構成(RancherOSバージョン)](./tffile/metabase-rancheros.tf) | このテンプレートはRancherOS上のDockerでMetabaseを実行する構成となっています。Metabaseのバックエンドとしてデータベースアプライアンス(PostgreSQL)を利用します。詳しくは [ドキュメント](https://manual.sakura.ad.jp/cloud/resource-manager/templates/metabase.html) をご覧ください。  |
 
 構文は [Terraform for さくらのクラウド ドキュメント](https://sacloud.github.io/terraform-provider-sakuracloud/) をご覧ください。
+
+
+
