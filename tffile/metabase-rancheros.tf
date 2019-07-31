@@ -37,108 +37,116 @@
 #
 ### 変数定義
 locals {
-    #*********************************************
-    # パスワード/公開鍵関連(要変更)
-    #*********************************************
-    # サーバ管理者のパスワード
-    server_password = "<put-your-password-here>"
+  #*********************************************
+  # パスワード/公開鍵関連(要変更)
+  #*********************************************
+  # サーバ管理者のパスワード
+  server_password = "<put-your-password-here>"
 
-    # データベース接続ユーザーのパスワード
-    database_password = "<put-your-password-here>"
+  # データベース接続ユーザーのパスワード
+  database_password = "<put-your-password-here>"
 
-    # さくらのクラウドに登録済みの公開鍵の名称
-    ssh_public_key_name = "<put-your-public-key-name>"
+  # さくらのクラウドに登録済みの公開鍵の名称
+  ssh_public_key_name = "<put-your-public-key-name>"
 
-    #*********************************************
-    # サーバ/ディスク
-    #*********************************************
-    # サーバ名
-    server_name = "metabase"
+  #*********************************************
+  # サーバ/ディスク
+  #*********************************************
+  # サーバ名
+  server_name = "metabase"
 
-    # サーバホスト名
-    host_name = "${local.server_name}"
+  # サーバホスト名
+  host_name = local.server_name
 
-    # サーバ コア数
-    server_core = 2
+  # サーバ コア数
+  server_core = 2
 
-    # サーバ メモリサイズ(GB)
-    server_memory = 4
+  # サーバ メモリサイズ(GB)
+  server_memory = 4
 
-    # ディスクサイズ
-    disk_size = 20
+  # ディスクサイズ
+  disk_size = 20
 
-    #*********************************************
-    # ネットワーク(スイッチ/パケットフィルタ)
-    #*********************************************
-    # スイッチ名
-    switch_name = "metabase-internal"
+  #*********************************************
+  # ネットワーク(スイッチ/パケットフィルタ)
+  #*********************************************
+  # スイッチ名
+  switch_name = "metabase-internal"
 
-    # パケットフィルタ名
-    packet_filter_name = "metabase-filter"
+  # パケットフィルタ名
+  packet_filter_name = "metabase-filter"
 
-    #*********************************************
-    # データベースアプライアンス
-    #*********************************************
-    # データベースアプライアンス名
-    database_name = "metabase-db"
+  #*********************************************
+  # データベースアプライアンス
+  #*********************************************
+  # データベースアプライアンス名
+  database_name = "metabase-db"
 
-    # プラン
-    database_plan = "30g" # 10g/30g/90g/240g
+  # プラン
+  database_plan = "30g" # 10g/30g/90g/240g
 
-    # 接続ユーザー名
-    database_user_name = "metabase"
+  # 接続ユーザー名
+  database_user_name = "metabase"
 
-    # バックアップ時刻
-    database_backup_time = "01:00"
+  # バックアップ時刻
+  database_backup_time = "01:00"
 
-    # バックアップ取得曜日
-    database_backup_weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+  # バックアップ取得曜日
+  database_backup_weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 }
 
 ### サーバ/ディスク
 
 # パブリックアーカイブ(OS)のID参照用のデータソース(RancherOS)
-data sakuracloud_archive "rancheros" {
-    os_type = "rancheros"
+data "sakuracloud_archive" "rancheros" {
+  os_type = "rancheros"
 }
 
 # 公開鍵のID参照用のデータソース
 data "sakuracloud_ssh_key" "ssh_public_key" {
-    name_selectors = ["${local.ssh_public_key_name}"]
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibilty in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  name_selectors = [local.ssh_public_key_name]
 }
 
 # ディスク
 resource "sakuracloud_disk" "disk" {
-    name              = "${local.server_name}"
-    source_archive_id = "${data.sakuracloud_archive.rancheros.id}"
+  name              = local.server_name
+  source_archive_id = data.sakuracloud_archive.rancheros.id
 
-    lifecycle {
-        ignore_changes = ["source_archive_id"]
-    }
+  lifecycle {
+    ignore_changes = [source_archive_id]
+  }
 }
 
 # サーバ
 resource "sakuracloud_server" "server" {
-    name              = "${local.server_name}"
-    disks             = ["${sakuracloud_disk.disk.id}"]
-    core              = "${local.server_core}"
-    memory            = "${local.server_memory}"
-    packet_filter_ids = ["${sakuracloud_packet_filter.filter.id}"]
-    additional_nics   = ["${sakuracloud_switch.sw.id}"]
+  name              = local.server_name
+  disks             = [sakuracloud_disk.disk.id]
+  core              = local.server_core
+  memory            = local.server_memory
+  packet_filter_ids = [sakuracloud_packet_filter.filter.id]
+  additional_nics   = [sakuracloud_switch.sw.id]
 
-    hostname          = "${local.host_name}"
-    password          = "${local.server_password}"
-    note_ids          = ["${sakuracloud_note.provisioning.id}"]
-    ssh_key_ids       = ["${data.sakuracloud_ssh_key.ssh_public_key.id}"]
-    disable_pw_auth   = true
+  hostname        = local.host_name
+  password        = local.server_password
+  note_ids        = [sakuracloud_note.provisioning.id]
+  ssh_key_ids     = [data.sakuracloud_ssh_key.ssh_public_key.id]
+  disable_pw_auth = true
 }
 
 # スタートアップスクリプト(IP設定、metabaseコンテナ起動)
 resource "sakuracloud_note" "provisioning" {
-    name  = "provisioning-metabase"
-    class = "yaml_cloud_config"
+  name  = "provisioning-metabase"
+  class = "yaml_cloud_config"
 
-    content = <<EOF
+  content = <<EOF
 #cloud-config
 rancher:
   console: default
@@ -163,79 +171,80 @@ rancher:
         MB_DB_HOST: 192.168.100.2
       restart: always
 EOF
+
 }
 
 ### データベースアプライアンス
 resource "sakuracloud_database" "db" {
-    name = "${local.database_name}"
+  name = local.database_name
 
-    database_type = "postgresql"
-    plan          = "${local.database_plan}"
+  database_type = "postgresql"
+  plan = local.database_plan
 
-    user_name     = "${local.database_user_name}"
-    user_password = "${local.database_password}"
+  user_name = local.database_user_name
+  user_password = local.database_password
 
-    allow_networks  = ["192.168.100.0/28"]
-    port            = 5432
-    backup_time     = "${local.database_backup_time}"
-    backup_weekdays = "${local.database_backup_weekdays}"
+  allow_networks = ["192.168.100.0/28"]
+  port = 5432
+  backup_time = local.database_backup_time
+  backup_weekdays = local.database_backup_weekdays
 
-    switch_id     = "${sakuracloud_switch.sw.id}"
-    ipaddress1    = "192.168.100.2"
-    nw_mask_len   = 28
-    default_route = "192.168.100.1"
+  switch_id = sakuracloud_switch.sw.id
+  ipaddress1 = "192.168.100.2"
+  nw_mask_len = 28
+  default_route = "192.168.100.1"
 }
 
 ### パケットフィルタ
 resource "sakuracloud_packet_filter" "filter" {
-    name = "${local.packet_filter_name}"
+  name = local.packet_filter_name
 
-    expressions = {
-        protocol    = "tcp"
-        dest_port   = "22"
-        description = "Allow external:SSH"
-    }
+  expressions {
+    protocol = "tcp"
+    dest_port = "22"
+    description = "Allow external:SSH"
+  }
 
-    expressions = {
-        protocol    = "tcp"
-        dest_port   = "80"
-        description = "Allow external:HTTP"
-    }
+  expressions {
+    protocol = "tcp"
+    dest_port = "80"
+    description = "Allow external:HTTP"
+  }
 
-   expressions = {
-        protocol = "icmp"
-    }
+  expressions {
+    protocol = "icmp"
+  }
 
-    expressions = {
-        protocol = "fragment"
-    }
+  expressions {
+    protocol = "fragment"
+  }
 
-    expressions = {
-        protocol    = "udp"
-        source_port = "123"
-    }
+  expressions {
+    protocol = "udp"
+    source_port = "123"
+  }
 
-    expressions = {
-        protocol    = "tcp"
-        dest_port   = "32768-61000"
-        description = "Allow from server"
-    }
+  expressions {
+    protocol = "tcp"
+    dest_port = "32768-61000"
+    description = "Allow from server"
+  }
 
-    expressions = {
-        protocol    = "udp"
-        dest_port   = "32768-61000"
-        description = "Allow from server"
-    }
+  expressions {
+    protocol = "udp"
+    dest_port = "32768-61000"
+    description = "Allow from server"
+  }
 
-    expressions = {
-        protocol    = "ip"
-        allow       = false
-        description = "Deny ALL"
-    }
+  expressions {
+    protocol = "ip"
+    allow = false
+    description = "Deny ALL"
+  }
 }
 
 ### スイッチ
-resource sakuracloud_switch "sw" {
-    name = "${local.switch_name}"
+resource "sakuracloud_switch" "sw" {
+  name = local.switch_name
 }
 
