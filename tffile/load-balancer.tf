@@ -140,7 +140,8 @@ EOF
 # サーバーで利用するパブリックアーカイブ(CentOS7)
 # ----------------------------------------------------------
 data "sakuracloud_archive" "centos" {
-os_type = "centos" // "ubuntu" を指定するとUbuntuの最新安定版パブリックアーカイブ
+// os_type = "centos" // コメントアウトを外し "ubuntu" を指定するとUbuntuの最新安定版パブリックアーカイブ
+tag_selectors = ["centos-7-latest"] // ubuntuを指定する場合はコメントアウト
 }
 
 # ----------------------------------------------------------
