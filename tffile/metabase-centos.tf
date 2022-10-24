@@ -80,7 +80,7 @@ locals {
 
 # パブリックアーカイブ(OS)のID参照用のデータソース(CentOS7)
 data "sakuracloud_archive" "centos" {
-  os_type = "centos"
+  os_type = "centos7"
 }
 
 # ディスク
